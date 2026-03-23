@@ -1,0 +1,73 @@
+# Virtual environment
+venv/
+.venv/
+env/
+.env/
+data/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+*.so
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Geospatial / raster data (large files)
+*.tif
+*.tiff
+*.geotiff
+*.img
+*.hdf
+*.hdf5
+*.h5
+*.nc
+*.grib
+*.jp2
+data/raw/
+data/processed/
+
+# Credentials and secrets
+.netrc
+credentials.json
+*.env
+secrets.py
+config/secrets.yaml
+config/secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/settings.json
+.idea/
+*.suo
+*.user
+
+# Logs and temp
+*.log
+*.tmp
+*.bak
+tmp/
+logs/
+
+# MLflow
+mlruns/
+mlflow.db
