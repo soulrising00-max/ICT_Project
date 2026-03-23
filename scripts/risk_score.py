@@ -101,12 +101,9 @@ def analyze_project(project_id, model):
 
 # ── Forest loss map ───────────────────────────────────────────────────────
 def plot_loss_map(project_id, df, result):
-    """Reshape predictions back to raster and save PNG."""
-    from pathlib import Path as P
     import numpy as np
 
-    # Get raster shape from clipped B04
-    b04_files = list((P("data/clipped") / project_id / "T1_2020").glob("*B04*.tif"))
+    b04_files = list((Path("data/clipped") / project_id / "T1_2020").glob("*B04*.tif"))
     if not b04_files:
         print(f"  ⚠  No B04 found for loss map — skipping")
         return
@@ -121,27 +118,30 @@ def plot_loss_map(project_id, df, result):
         raw[raw > 10000] = np.nan
         raw[raw < -1000] = np.nan
 
-    # Rebuild full pixel array with NaN for masked pixels
     valid_mask = ~np.isnan(raw.flatten())
     red_vals = raw.flatten()[valid_mask]
     nonzero_mask = red_vals != 0
     full_valid = valid_mask.copy()
     full_valid[valid_mask] = nonzero_mask
 
+    n_valid = int(full_valid.sum())
+    n_df = len(df)
+    n = min(n_valid, n_df)
+
     pred_full = np.full(h * w, np.nan)
-    pred_full[full_valid] = df["pred"].values[: full_valid.sum()]
+    idx = np.where(full_valid)[0][:n]
+    pred_full[idx] = df["pred"].values[:n]
     pred_map = pred_full.reshape(h, w)
+
+    ndvi_full = np.full(h * w, np.nan)
+    ndvi_full[idx] = df["ndvi_t1"].values[:n]
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-    # NDVI T1
-    ndvi_full = np.full(h * w, np.nan)
-    ndvi_full[full_valid] = df["ndvi_t1"].values[: full_valid.sum()]
     axes[0].imshow(ndvi_full.reshape(h, w), cmap="RdYlGn", vmin=-0.2, vmax=0.9)
     axes[0].set_title(f"{project_id}\nNDVI 2020")
     axes[0].axis("off")
 
-    # Predicted loss
     im = axes[1].imshow(pred_map, cmap="RdYlGn_r", vmin=0, vmax=1)
     axes[1].set_title(
         f"Predicted forest loss\n"

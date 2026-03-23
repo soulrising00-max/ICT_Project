@@ -3,7 +3,9 @@ venv/
 .venv/
 env/
 .env/
-data/
+data/*
+!data/models/
+!data/models/random_forest.joblib
 # Python
 __pycache__/
 *.py[cod]
@@ -71,3 +73,5 @@ logs/
 # MLflow
 mlruns/
 mlflow.db
+mlruns/
+*.db
